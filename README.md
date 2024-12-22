@@ -1,0 +1,1 @@
+Create a simple loyalty management system prototype for an eCommerce platform. The system should manage loyalty points for individual users and groups.
