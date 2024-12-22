@@ -27,7 +27,7 @@ python manage.py createsuperuser
 ```
 python manage.py runserver
 ```
-6. Access Wagtail Admin Panel(Optional)
+6. Access Admin Panel(Optional)
 ```
-http://http://localhost:8000/django-admin/
+http://localhost:8000/django-admin/
 ```
