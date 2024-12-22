@@ -1,0 +1,6 @@
+<form method="post">
+    {% csrf_token %}
+    <label for="amount">Enter Purchase Amount:</label>
+    <input type="number" name="amount" step="0.01" required>
+    <button type="submit">Purchase</button>
+</form>
