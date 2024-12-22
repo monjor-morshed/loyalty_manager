@@ -29,15 +29,16 @@ def c_login(request):
             customer = authenticate(request, username=username, password=password)
             if customer is not None:
                 login(request, customer) #
-                return redirect('make_purchase')  # Redirect to success page after successful login
+                return redirect('dash')  # Redirect to success page after successful login
     else:
         form = CustomerAuthenticationForm()
 
     return render(request, 'accounts/login.html', {'form': form})
 
 @login_required
-def success(request):
-    return render(request, 'accounts/success.html')
+def dash(request):
+    user_points = request.user.individual_points
+    return render(request, 'accounts/dash.html', {'points': user_points})
 
 @login_required
 def make_purchase(request):
@@ -65,7 +66,9 @@ def redeem_points(request):
 @login_required
 def view_points(request):
     user_points = request.user.individual_points
-    return render(request, 'accounts/view_points.html', {'points': user_points})
+    group_points = sum(loyalty_group.points for loyalty_group in request.user.loyalty_groups.all())
+    return render(request, 'accounts/view_points.html', {'points': user_points, 'group_points': group_points})
+
 
 @login_required
 def view_discount(request):

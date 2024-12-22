@@ -37,10 +37,37 @@ class Customer(AbstractUser):
         points_earned = int(purchase_amount * 10)
         self.individual_points += points_earned
         self.save()
+        for loyalty_group in self.loyalty_groups.all():
+            loyalty_group.add_points(points_earned)
 
     def redeem_points(self, points_to_redeem):
         discount = points_to_redeem / 100
         self.individual_points -= points_to_redeem
 
         self.save()
+        for loyalty_group in self.loyalty_groups.all():
+            loyalty_group.redeem_points(points_to_redeem)
+
         return discount
+
+class LoyaltyGroup(models.Model):
+    name = models.CharField(max_length=50)
+    members = models.ManyToManyField(Customer, related_name='loyalty_groups')
+    points = models.PositiveIntegerField(default=0)
+    def __str__(self):
+        return self.name
+
+    def add_points(self, points):
+        self.points += points
+        self.save()
+
+    def redeem_points(self, points_to_redeem):
+        if self.points >= points_to_redeem:
+            self.points -= points_to_redeem
+            self.save()
+            for member in self.members.all():
+                if member.individual_points >= points_to_redeem:
+                    member.individual_points -= points_to_redeem
+                    member.save()
+        else:
+            raise ValueError("Not enough points.")
